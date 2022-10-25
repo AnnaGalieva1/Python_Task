@@ -1,58 +1,58 @@
-from dataclasses import Field, field
+#Создайте программу для игры в "Крестики-нолики".
+desk = [1, 2, 3, 4, 5, 6, 7, 8, 9] 
+win = [(7, 4, 1), (8, 5, 2), (9, 6, 3), (1, 2, 3), (4, 5, 6),
+       (7, 8, 9), (1, 5, 9), (7, 5, 3)]  
 
 
-def playing_field(field):
-    print('-' * 13)
-    for i in range(3):
-        print('|', field[0+i*3], '|', field[1+i*3], '|', field[2+i*3], '|')
-        print('-' * 13)
+def desk_view(): 
+    print('___________________')
+    for i in range(2, -1, -1):
+        print('| ', desk[0 + i*3], ' | ',
+              desk[1 + i*3], ' | ', desk[2 + i*3], ' |')
+        print('___________________')
 
-def game_move(players):
-    valid = False
-    while not valid:
-        player_answer = input('Куда поставим' + players+'?')
-        try:
-            player_answer = int(player_answer)
-        except:
-            print('Вводить числа от 1 до 9')
+
+def input_cell(user_tag):
+    while True:
+        cell = input("выберите свободную клетку для " + user_tag + ' - ')
+        if cell not in '123456789':
+            print('неверный ввод!')
             continue
-        if 1 <= player_answer <= 9:
-            if str(field[player_answer-1]) not in 'xo':
-                field[player_answer-1] = players
-                valid = True
-            else:
-                print('Эта клетка уже занята!')
-        else:
-            print('Ввод чисел от 1 до 9')
-def win(field):
-    coordinates = ((0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8), (2, 4, 6))
-    for each in coordinates:
-        if field[each[0]] == field[each[1]] == field[each[2]]:
-            return field[each[0]]
-    return False
-def main(field):
+        if str(desk[int(cell) - 1]) in 'X0':
+            print('клетка занята')
+            continue
+        desk[int(cell)-1] = user_tag
+        break
+
+
+def winner(): 
+    for cort in win:
+        if desk[cort[0]-1] == desk[cort[1]-1] == desk[cort[2]-1]:
+            return desk[cort[0]-1]
+    else:
+        return False
+
+
+def main():
     count = 0
-    win = False
-    while not win:
-        playing_field(field)
+    while True:
+        desk_view()
         if count % 2 == 0:
-            take_input('x')
+            input_cell('X')
         else:
-            take_input('0')
-        count += 1
-        if count > 4:
-            tmp = win(field)
-            if tmp:
-                print(tmp, 'Победа!')
-                win = True
+            input_cell('0')
+        if count > 3:
+            who = winner()
+            if who:
+                desk_view()
+                print('победа! ', who)
                 break
-        if count == 9:
-            print('Ничья!')
+        count += 1
+        if count > 8:
+            desk_view()
+            print('ничья')  
             break
-    playing_field(field)
+
 
 if __name__ == '__main__':
-    print('Игра крестики-нолики')
-    field = list(range(1, 10))
-    main(field)
-            
+    main()
